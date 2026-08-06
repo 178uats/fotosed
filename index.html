@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Editor de Fotos iPod</title>
 
-  <!-- Favicon ultraligero compatible con GitHub Pages -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📷</text></svg>">
+  <!-- Icono exclusivo para la pantalla de inicio del iPod Touch 5G -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23ff9500'/><text x='50%` y='55%' font-size='90' text-anchor='middle' dominant-baseline='middle'>📷</text></svg>">
 
   <!-- Configuración para pantalla completa en iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -53,12 +53,8 @@
       border: none;
       cursor: pointer;
     }
-    .btn-action:active {
-      opacity: 0.8;
-    }
+    .btn-action:active { opacity: 0.8; }
     input[type="file"] { display: none; }
-
-    /* Área de Trabajo de la Imagen */
     .editor-container {
       flex: 1;
       display: flex;
@@ -80,8 +76,6 @@
       font-size: 14px;
       text-align: center;
     }
-
-    /* Panel de Controles de Edición */
     .controls-panel {
       background-color: #1c1c1e;
       border-top: 1px solid #2c2c2e;
@@ -128,9 +122,7 @@
       cursor: pointer;
       text-align: center;
     }
-    .btn-secondary:active {
-      background: #3a3a3c;
-    }
+    .btn-secondary:active { background: #3a3a3c; }
   </style>
 </head>
 <body>
@@ -150,26 +142,21 @@
   </div>
 
   <div class="controls-panel">
-    <!-- Ajustes Básicos -->
     <div class="slider-group">
       <label>Brillo</label>
       <input type="range" id="bright" min="-100" max="100" value="0" oninput="aplicarFiltros()">
       <span id="v-bright">0</span>
     </div>
-
     <div class="slider-group">
       <label>Contraste</label>
       <input type="range" id="contrast" min="-100" max="100" value="0" oninput="aplicarFiltros()">
       <span id="v-contrast">0</span>
     </div>
-
     <div class="slider-group">
       <label>Saturación</label>
       <input type="range" id="saturate" min="-100" max="100" value="0" oninput="aplicarFiltros()">
       <span id="v-saturate">0</span>
     </div>
-
-    <!-- Botones de Acción Rápida -->
     <div class="btn-row">
       <button class="btn-secondary" onclick="rotarImagen()">🔄 Rotar</button>
       <button class="btn-secondary" onclick="aplicarEfecto('bw')">⬛ B&N</button>
@@ -203,7 +190,6 @@
 
     function aplicarFiltros() {
       if (!imagenCargada) return;
-
       var b = parseInt(document.getElementById('bright').value, 10);
       var c = parseInt(document.getElementById('contrast').value, 10);
       var s = parseInt(document.getElementById('saturate').value, 10);
@@ -212,7 +198,6 @@
       document.getElementById('v-contrast').innerText = c;
       document.getElementById('v-saturate').innerText = s;
 
-      // Ajustar dimensiones del Canvas por si hay rotación
       if (rotacionGrados % 180 !== 0) {
         canvas.width = imgOriginal.height;
         canvas.height = imgOriginal.width;
@@ -223,47 +208,30 @@
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.save();
-
-      // Mover el origen al centro para aplicar rotación
       ctx.translate(canvas.width / 2, canvas.height / 2);
       ctx.rotate((rotacionGrados * Math.PI) / 180);
       ctx.drawImage(imgOriginal, -imgOriginal.width / 2, -imgOriginal.height / 2);
       ctx.restore();
 
-      // Modificación directa de pixeles compatible con Safari de iOS 9
       var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       var data = imgData.data;
-
       var factorContraste = (259 * (c + 255)) / (255 * (259 - c));
       var factorSaturacion = (s + 100) / 100;
 
       for (var i = 0; i < data.length; i += 4) {
-        var r = data[i];
-        var g = data[i + 1];
-        var bCol = data[i + 2];
-
-        // 1. Brillo
-        r += b;
-        g += b;
-        bCol += b;
-
-        // 2. Contraste
+        var r = data[i], g = data[i + 1], bCol = data[i + 2];
+        r += b; g += b; bCol += b;
         r = factorContraste * (r - 128) + 128;
         g = factorContraste * (g - 128) + 128;
         bCol = factorContraste * (bCol - 128) + 128;
-
-        // 3. Saturación
         var gris = 0.2989 * r + 0.5870 * g + 0.1140 * bCol;
         r = gris + factorSaturacion * (r - gris);
         g = gris + factorSaturacion * (g - gris);
         bCol = gris + factorSaturacion * (bCol - gris);
-
-        // Clampar valores entre 0 y 255
         data[i] = Math.min(255, Math.max(0, r));
         data[i + 1] = Math.min(255, Math.max(0, g));
         data[i + 2] = Math.min(255, Math.max(0, bCol));
       }
-
       ctx.putImageData(imgData, 0, 0);
     }
 
@@ -303,4 +271,3 @@
   </script>
 </body>
 </html>
-
