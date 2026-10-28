@@ -1,273 +1,807 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Editor de Fotos iPod</title>
-
-  <!-- Icono exclusivo para la pantalla de inicio del iPod Touch 5G -->
-  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23ff9500'/><text x='50%` y='55%' font-size='90' text-anchor='middle' dominant-baseline='middle'>📷</text></svg>">
-
-  <!-- Configuración para pantalla completa en iOS -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="FotoEditor">
-
-  <style>
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-    body {
-      font-family: -apple-system, HelveticaNeue, sans-serif;
-      background-color: #000000;
-      color: #ffffff;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-    header {
-      background-color: #1c1c1e;
-      padding: 10px 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #2c2c2e;
-    }
-    header h1 {
-      font-size: 16px;
-      margin: 0;
-      color: #ff9500;
-    }
-    .btn-action {
-      background: #ff9500;
-      color: #fff;
-      padding: 6px 12px;
-      border-radius: 15px;
-      font-size: 12px;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-    }
-    .btn-action:active { opacity: 0.8; }
-    input[type="file"] { display: none; }
-    .editor-container {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px;
-      background-color: #121212;
-      overflow: hidden;
-      position: relative;
-    }
-    canvas {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      box-shadow: 0 0 10px rgba(0,0,0,0.8);
-    }
-    .placeholder-text {
-      color: #666;
-      font-size: 14px;
-      text-align: center;
-    }
-    .controls-panel {
-      background-color: #1c1c1e;
-      border-top: 1px solid #2c2c2e;
-      padding: 12px;
-      max-height: 180px;
-      overflow-y: auto;
-    }
-    .slider-group {
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .slider-group label {
-      font-size: 12px;
-      color: #aaa;
-      width: 80px;
-    }
-    .slider-group input[type="range"] {
-      flex: 1;
-      accent-color: #ff9500;
-      margin: 0 10px;
-    }
-    .slider-group span {
-      font-size: 11px;
-      color: #ff9500;
-      width: 35px;
-      text-align: right;
-    }
-    .btn-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-      gap: 5px;
-    }
-    .btn-secondary {
-      flex: 1;
-      background: #2c2c2e;
-      color: #fff;
-      border: 1px solid #3a3a3c;
-      padding: 8px 0;
-      border-radius: 8px;
-      font-size: 11px;
-      cursor: pointer;
-      text-align: center;
-    }
-    .btn-secondary:active { background: #3a3a3c; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Angry Birds Special PWA</title>
+    <!-- Configuración PWA para iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AngryBirds">
+    <link rel="apple-touch-icon" href="icon.png">
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #87CEEB;
+            font-family: sans-serif;
+            touch-action: none;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10;
+        }
+        .hidden {
+            display: none !important;
+        }
+        h1 {
+            color: #ffeb3b;
+            font-size: 34px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            text-align: center;
+        }
+        .btn {
+            background: linear-gradient(to bottom, #4caf50, #2e7d32);
+            color: #fff;
+            border: 3px solid #81c784;
+            padding: 10px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            margin: 6px;
+            width: 220px;
+            text-align: center;
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 350px;
+            margin-bottom: 15px;
+        }
+        .level-btn {
+            background: #ffb300;
+            color: #3e2723;
+            border: 2px solid #ffe082;
+            width: 60px;
+            height: 60px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #hud {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            pointer-events: none;
+            z-index: 5;
+        }
+        #pause-btn {
+            pointer-events: auto;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid white;
+            color: white;
+            padding: 6px 14px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        /* Selector de Pájaros */
+        #bird-selector {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(0,0,0,0.6);
+            padding: 8px 14px;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.4);
+            z-index: 6;
+        }
+        .bird-card {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+        }
+        .bird-card.active {
+            border-color: #ffeb3b;
+            transform: scale(1.15);
+            box-shadow: 0 0 10px #ffeb3b;
+        }
+        #power-hint {
+            position: absolute;
+            top: 55px;
+            width: 100%;
+            text-align: center;
+            color: #ffeb3b;
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+            pointer-events: none;
+            z-index: 5;
+        }
+    </style>
 </head>
 <body>
 
-  <header>
-    <h1>FotoEditor</h1>
-    <div>
-      <label class="btn-action" for="fileInput">Abrir</label>
-      <input type="file" id="fileInput" accept="image/*" onchange="cargarImagen(event)">
-      <button class="btn-action" onclick="descargarImagen()">Guardar</button>
+    <!-- Menú Principal -->
+    <div id="main-menu" class="screen">
+        <h1>ANGRY BIRDS SPECIAL</h1>
+        <button class="btn" onclick="startLevel(currentLevel)">JUGAR</button>
+        <button class="btn" onclick="openLevelsMenu()">ELEGIR NIVEL</button>
     </div>
-  </header>
 
-  <div class="editor-container">
-    <canvas id="canvas"></canvas>
-    <div id="placeholder" class="placeholder-text">Toca "Abrir" para seleccionar una foto de tu iPod</div>
-  </div>
-
-  <div class="controls-panel">
-    <div class="slider-group">
-      <label>Brillo</label>
-      <input type="range" id="bright" min="-100" max="100" value="0" oninput="aplicarFiltros()">
-      <span id="v-bright">0</span>
+    <!-- Menú de Selección de Niveles (11 niveles) -->
+    <div id="levels-menu" class="screen hidden">
+        <h1>SELECCIONAR NIVEL</h1>
+        <div class="levels-grid" id="levels-grid-container"></div>
+        <button class="btn" style="background:#795548; border-color:#d7ccc8;" onclick="closeLevelsMenu()">VOLVER</button>
     </div>
-    <div class="slider-group">
-      <label>Contraste</label>
-      <input type="range" id="contrast" min="-100" max="100" value="0" oninput="aplicarFiltros()">
-      <span id="v-contrast">0</span>
+
+    <!-- Pantalla de Pausa -->
+    <div id="pause-screen" class="screen hidden">
+        <h1>JUEGO PAUSADO</h1>
+        <div style="color: #ffeb3b; font-size: 15px; margin-bottom: 15px; text-align: center;">Nota: Al reanudar se reiniciará el nivel.</div>
+        <button class="btn" onclick="resumeAndRestartLevel()">REANUDAR</button>
+        <button class="btn" style="background:#d32f2f; border-color:#ff8a80;" onclick="quitToMenu()">SALIR AL MENÚ</button>
     </div>
-    <div class="slider-group">
-      <label>Saturación</label>
-      <input type="range" id="saturate" min="-100" max="100" value="0" oninput="aplicarFiltros()">
-      <span id="v-saturate">0</span>
+
+    <!-- Pantalla de Victoria / Derrota -->
+    <div id="message-screen" class="screen hidden">
+        <h1 id="msg-title">¡VICTORIA!</h1>
+        <div style="color: white; font-size: 18px; margin-bottom: 20px;" id="msg-subtitle">Puntuación: 0</div>
+        <button class="btn" id="next-lvl-btn" onclick="nextLevel()">SIGUIENTE NIVEL</button>
+        <button class="btn" style="background:#795548; border-color:#d7ccc8;" onclick="quitToMenu()">MENÚ PRINCIPAL</button>
     </div>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="rotarImagen()">🔄 Rotar</button>
-      <button class="btn-secondary" onclick="aplicarEfecto('bw')">⬛ B&N</button>
-      <button class="btn-secondary" onclick="aplicarEfecto('sepia')">📜 Sepia</button>
-      <button class="btn-secondary" onclick="resetFiltros()">❌ Reset</button>
+
+    <!-- HUD de Partida -->
+    <div id="hud" class="hidden">
+        <div>Nivel: <span id="lbl-level">1</span> | Puntos: <span id="score">0</span></div>
+        <button id="pause-btn" onclick="pauseGame()">PAUSA</button>
     </div>
-  </div>
 
-  <script>
-    var canvas = document.getElementById('canvas');
-    var ctx = canvas.getContext('2d');
-    var imgOriginal = new Image();
-    var imagenCargada = false;
-    var rotacionGrados = 0;
+    <!-- Barra Inferior para Seleccionar Pájaros -->
+    <div id="bird-selector" class="hidden"></div>
 
-    function cargarImagen(e) {
-      var reader = new FileReader();
-      reader.onload = function(event) {
-        imgOriginal = new Image();
-        imgOriginal.onload = function() {
-          imagenCargada = true;
-          document.getElementById('placeholder').style.display = 'none';
-          resetFiltros();
-        };
-        imgOriginal.src = event.target.result;
-      };
-      if (e.target.files[0]) {
-        reader.readAsDataURL(e.target.files[0]);
-      }
-    }
+    <div id="power-hint" class="hidden"></div>
 
-    function aplicarFiltros() {
-      if (!imagenCargada) return;
-      var b = parseInt(document.getElementById('bright').value, 10);
-      var c = parseInt(document.getElementById('contrast').value, 10);
-      var s = parseInt(document.getElementById('saturate').value, 10);
+    <canvas id="gameCanvas"></canvas>
 
-      document.getElementById('v-bright').innerText = b;
-      document.getElementById('v-contrast').innerText = c;
-      document.getElementById('v-saturate').innerText = s;
+    <script>
+        var canvas = document.getElementById('gameCanvas');
+        var ctx = canvas.getContext('2d');
 
-      if (rotacionGrados % 180 !== 0) {
-        canvas.width = imgOriginal.height;
-        canvas.height = imgOriginal.width;
-      } else {
-        canvas.width = imgOriginal.width;
-        canvas.height = imgOriginal.height;
-      }
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            slingX = canvas.width * 0.14;
+            slingY = canvas.height - 180;
+            if (currentSlingshotBird && currentSlingshotBird.state === 'IDLE') {
+                currentSlingshotBird.x = slingX;
+                currentSlingshotBird.y = slingY;
+            }
+        }
+        window.addEventListener('resize', resize);
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.save();
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate((rotacionGrados * Math.PI) / 180);
-      ctx.drawImage(imgOriginal, -imgOriginal.width / 2, -imgOriginal.height / 2);
-      ctx.restore();
+        var gameState = 'MENU';
+        var score = 0;
+        var currentLevel = 1;
+        var maxLevels = 11;
 
-      var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      var data = imgData.data;
-      var factorContraste = (259 * (c + 255)) / (255 * (259 - c));
-      var factorSaturacion = (s + 100) / 100;
+        var slingX = 100;
+        var slingY = 400;
 
-      for (var i = 0; i < data.length; i += 4) {
-        var r = data[i], g = data[i + 1], bCol = data[i + 2];
-        r += b; g += b; bCol += b;
-        r = factorContraste * (r - 128) + 128;
-        g = factorContraste * (g - 128) + 128;
-        bCol = factorContraste * (bCol - 128) + 128;
-        var gris = 0.2989 * r + 0.5870 * g + 0.1140 * bCol;
-        r = gris + factorSaturacion * (r - gris);
-        g = gris + factorSaturacion * (g - gris);
-        bCol = gris + factorSaturacion * (bCol - gris);
-        data[i] = Math.min(255, Math.max(0, r));
-        data[i + 1] = Math.min(255, Math.max(0, g));
-        data[i + 2] = Math.min(255, Math.max(0, bCol));
-      }
-      ctx.putImageData(imgData, 0, 0);
-    }
+        var birdTypes = [
+            { id: 0, type: 'RED', color: '#d32f2f', radius: 18, name: 'Rojo' },
+            { id: 1, type: 'YELLOW', color: '#fdd835', radius: 16, name: 'Amarillo' },
+            { id: 2, type: 'BLUE', color: '#29b6f6', radius: 12, name: 'Azul' },
+            { id: 3, type: 'BLACK', color: '#212121', radius: 22, name: 'Negro' },
+            { id: 4, type: 'WHITE', color: '#eceff1', radius: 20, name: 'Blanco' }
+        ];
 
-    function rotarImagen() {
-      if (!imagenCargada) return;
-      rotacionGrados = (rotacionGrados + 90) % 360;
-      aplicarFiltros();
-    }
+        var selectedBirdIndex = 0;
+        var currentSlingshotBird = null;
+        var flyingBirds = [];
+        var projectiles = [];
 
-    function aplicarEfecto(tipo) {
-      if (!imagenCargada) return;
-      if (tipo === 'bw') {
-        document.getElementById('saturate').value = -100;
-      } else if (tipo === 'sepia') {
-        document.getElementById('bright').value = 10;
-        document.getElementById('contrast').value = 10;
-        document.getElementById('saturate').value = -50;
-      }
-      aplicarFiltros();
-    }
+        var powerValue = 0;
+        var powerDirection = 1;
+        var launchAngleX = 0;
+        var launchAngleY = 0;
 
-    function resetFiltros() {
-      document.getElementById('bright').value = 0;
-      document.getElementById('contrast').value = 0;
-      document.getElementById('saturate').value = 0;
-      rotacionGrados = 0;
-      aplicarFiltros();
-    }
+        var blocks = [];
+        var pigs = [];
+        var gravity = 0.35;
 
-    function descargarImagen() {
-      if (!imagenCargada) return;
-      var enlace = document.createElement('a');
-      enlace.download = 'foto_editada.png';
-      enlace.href = canvas.toDataURL('image/png');
-      enlace.click();
-    }
-  </script>
+        function buildLevelsGrid() {
+            var gridContainer = document.getElementById('levels-grid-container');
+            gridContainer.innerHTML = '';
+            for (let i = 1; i <= maxLevels; i++) {
+                let btn = document.createElement('button');
+                btn.className = 'level-btn';
+                btn.innerText = i;
+                btn.onclick = function() {
+                    currentLevel = i;
+                    closeLevelsMenu();
+                    startLevel(currentLevel);
+                };
+                gridContainer.appendChild(btn);
+            }
+        }
+        buildLevelsGrid();
+
+        function renderBirdSelector() {
+            var container = document.getElementById('bird-selector');
+            container.innerHTML = '';
+            birdTypes.forEach((b, idx) => {
+                let card = document.createElement('div');
+                card.className = 'bird-card' + (idx === selectedBirdIndex ? ' active' : '');
+                card.style.backgroundColor = b.color;
+                card.innerText = b.name[0];
+                card.onclick = function() {
+                    if (currentSlingshotBird && (currentSlingshotBird.state === 'AIMING' || currentSlingshotBird.state === 'CHARGING')) return;
+                    selectedBirdIndex = idx;
+                    renderBirdSelector();
+                    loadSelectedBird();
+                };
+                container.appendChild(card);
+            });
+        }
+
+        function openLevelsMenu() {
+            document.getElementById('main-menu').classList.add('hidden');
+            document.getElementById('levels-menu').classList.remove('hidden');
+        }
+        function closeLevelsMenu() {
+            document.getElementById('levels-menu').classList.add('hidden');
+            document.getElementById('main-menu').classList.remove('hidden');
+        }
+
+        function startLevel(lvl) {
+            currentLevel = lvl;
+            document.getElementById('main-menu').classList.add('hidden');
+            document.getElementById('levels-menu').classList.add('hidden');
+            document.getElementById('message-screen').classList.add('hidden');
+            document.getElementById('pause-screen').classList.add('hidden');
+            document.getElementById('hud').classList.remove('hidden');
+            document.getElementById('bird-selector').classList.remove('hidden');
+
+            score = 0;
+            flyingBirds = [];
+            projectiles = [];
+            document.getElementById('lbl-level').innerText = currentLevel;
+
+            loadStructureForLevel(currentLevel);
+            renderBirdSelector();
+            loadSelectedBird();
+            gameState = 'PLAYING';
+            loop();
+        }
+
+        // Construcción de estructuras progresivamente más alejadas, resistentes y múltiples
+        function loadStructureForLevel(lvl) {
+            blocks = [];
+            pigs = [];
+
+            let baseY = canvas.height - 80;
+            // Distancia incremental (entre más alto el nivel, más lejos la base)
+            let baseDist = canvas.width * (0.42 + (lvl * 0.025));
+            // Salud incremental según el nivel
+            let hp = 40 + (lvl * 25);
+            let bColor = lvl > 7 ? '#455a64' : (lvl > 4 ? '#795548' : '#8d6e63');
+
+            // 1 O MÁS ESTRUCTURAS SEGÚN EL NIVEL
+            if (lvl <= 2) {
+                // 1 Estructura Simple
+                blocks.push({ x: baseDist, y: baseY - 80, w: 20, h: 80, color: bColor, health: hp });
+                blocks.push({ x: baseDist + 75, y: baseY - 80, w: 20, h: 80, color: bColor, health: hp });
+                blocks.push({ x: baseDist - 10, y: baseY - 100, w: 115, h: 20, color: '#d7ccc8', health: hp });
+                pigs.push({ x: baseDist + 37, y: baseY - 35, radius: 20, alive: true, health: 30 + lvl * 10 });
+            } 
+            else if (lvl <= 6) {
+                // 2 Estructuras separadas
+                let dist1 = baseDist - 60;
+                let dist2 = baseDist + 110;
+
+                // Estructura 1 (Madera)
+                blocks.push({ x: dist1, y: baseY - 70, w: 20, h: 70, color: bColor, health: hp });
+                blocks.push({ x: dist1 + 60, y: baseY - 70, w: 20, h: 70, color: bColor, health: hp });
+                blocks.push({ x: dist1 - 5, y: baseY - 90, w: 90, h: 20, color: '#d7ccc8', health: hp });
+                pigs.push({ x: dist1 + 30, y: baseY - 30, radius: 18, alive: true, health: 35 + lvl * 5 });
+
+                // Estructura 2 (Piedra)
+                blocks.push({ x: dist2, y: baseY - 90, w: 22, h: 90, color: '#607d8b', health: hp + 30 });
+                blocks.push({ x: dist2 + 65, y: baseY - 90, w: 22, h: 90, color: '#607d8b', health: hp + 30 });
+                blocks.push({ x: dist2 - 5, y: baseY - 110, w: 95, h: 20, color: '#cfd8dc', health: hp + 20 });
+                pigs.push({ x: dist2 + 32, y: baseY - 35, radius: 18, alive: true, health: 35 + lvl * 5 });
+            } 
+            else {
+                // 3 Estructuras o Fortalezas complejas múltiples (Nivel 7 a 11)
+                let d1 = baseDist - 110;
+                let d2 = baseDist + 10;
+                let d3 = baseDist + 130;
+
+                // Torre 1
+                blocks.push({ x: d1, y: baseY - 75, w: 20, h: 75, color: bColor, health: hp });
+                blocks.push({ x: d1 + 55, y: baseY - 75, w: 20, h: 75, color: bColor, health: hp });
+                blocks.push({ x: d1 - 5, y: baseY - 95, w: 85, h: 20, color: '#cfd8dc', health: hp });
+                pigs.push({ x: d1 + 27, y: baseY - 30, radius: 18, alive: true, health: 50 });
+
+                // Búnker central doble
+                blocks.push({ x: d2, y: baseY - 110, w: 25, h: 110, color: '#37474f', health: hp + 50 });
+                blocks.push({ x: d2 + 75, y: baseY - 110, w: 25, h: 110, color: '#37474f', health: hp + 50 });
+                blocks.push({ x: d2 - 5, y: baseY - 130, w: 110, h: 20, color: '#90a4ae', health: hp + 40 });
+                pigs.push({ x: d2 + 37, y: baseY - 35, radius: 20, alive: true, health: 60 });
+                pigs.push({ x: d2 + 37, y: baseY - 150, radius: 16, alive: true, health: 40 });
+
+                // Torre 3
+                blocks.push({ x: d3, y: baseY - 75, w: 20, h: 75, color: bColor, health: hp });
+                blocks.push({ x: d3 + 55, y: baseY - 75, w: 20, h: 75, color: bColor, health: hp });
+                blocks.push({ x: d3 - 5, y: baseY - 95, w: 85, h: 20, color: '#cfd8dc', health: hp });
+                pigs.push({ x: d3 + 27, y: baseY - 30, radius: 18, alive: true, health: 50 });
+            }
+        }
+
+        function loadSelectedBird() {
+            let b = birdTypes[selectedBirdIndex];
+            currentSlingshotBird = {
+                type: b.type,
+                color: b.color,
+                radius: b.radius,
+                name: b.name,
+                x: slingX,
+                y: slingY,
+                vx: 0,
+                vy: 0,
+                state: 'IDLE',
+                abilityUsed: false
+            };
+            powerValue = 0;
+            powerDirection = 1;
+            document.getElementById('power-hint').innerText = 'Pájaro: ' + b.name + ' - Arrastra para apuntar';
+            document.getElementById('power-hint').classList.remove('hidden');
+        }
+
+        function updateHUD() {
+            document.getElementById('score').innerText = score;
+        }
+
+        function pauseGame() {
+            if (gameState === 'GAMEOVER') return;
+            gameState = 'PAUSED';
+            document.getElementById('power-hint').classList.add('hidden');
+            document.getElementById('pause-screen').classList.remove('hidden');
+        }
+
+        function resumeAndRestartLevel() {
+            document.getElementById('pause-screen').classList.add('hidden');
+            startLevel(currentLevel);
+        }
+
+        function quitToMenu() {
+            document.getElementById('pause-screen').classList.add('hidden');
+            document.getElementById('message-screen').classList.add('hidden');
+            document.getElementById('hud').classList.add('hidden');
+            document.getElementById('bird-selector').classList.add('hidden');
+            document.getElementById('power-hint').classList.add('hidden');
+            document.getElementById('main-menu').classList.remove('hidden');
+            gameState = 'MENU';
+        }
+
+        function getTouchPos(e) {
+            let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            let clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX, y: clientY };
+        }
+
+        window.addEventListener('mousedown', handleStart);
+        window.addEventListener('touchstart', handleStart, {passive: false});
+
+        function handleStart(e) {
+            if (gameState !== 'PLAYING') return;
+
+            if (currentSlingshotBird) {
+                if (currentSlingshotBird.state === 'IDLE') {
+                    let pos = getTouchPos(e);
+                    let dist = Math.hypot(pos.x - currentSlingshotBird.x, pos.y - currentSlingshotBird.y);
+                    if (dist < 60) currentSlingshotBird.state = 'AIMING';
+                } else if (currentSlingshotBird.state === 'CHARGING') {
+                    fireBird();
+                    return;
+                }
+            }
+
+            for (let b of flyingBirds) {
+                if (b.state === 'FLYING') {
+                    triggerSpecialAbility(b);
+                }
+            }
+        }
+
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('touchmove', handleMove, {passive: false});
+
+        function handleMove(e) {
+            if (gameState !== 'PLAYING' || !currentSlingshotBird) return;
+            if (currentSlingshotBird.state !== 'AIMING') return;
+
+            let pos = getTouchPos(e);
+            let dx = pos.x - slingX;
+            let dy = pos.y - slingY;
+            let dist = Math.hypot(dx, dy);
+            let maxRadius = 85;
+
+            if (dist > maxRadius) {
+                dx = (dx / dist) * maxRadius;
+                dy = (dy / dist) * maxRadius;
+            }
+            currentSlingshotBird.x = slingX + dx;
+            currentSlingshotBird.y = slingY + dy;
+        }
+
+        window.addEventListener('mouseup', handleEnd);
+        window.addEventListener('touchend', handleEnd);
+
+        function handleEnd() {
+            if (gameState !== 'PLAYING' || !currentSlingshotBird) return;
+            if (currentSlingshotBird.state !== 'AIMING') return;
+
+            launchAngleX = slingX - currentSlingshotBird.x;
+            launchAngleY = slingY - currentSlingshotBird.y;
+
+            currentSlingshotBird.state = 'CHARGING';
+            powerValue = 0;
+            powerDirection = 1;
+            document.getElementById('power-hint').innerText = '¡Toca para fijar la potencia de tiro!';
+        }
+
+        function fireBird() {
+            if (!currentSlingshotBird) return;
+            let b = currentSlingshotBird;
+            // Potencia de lanzamiento alta para llegar a estructuras lejanas
+            let multiplier = 0.20 + (powerValue * 0.42);
+            b.vx = launchAngleX * multiplier;
+            b.vy = launchAngleY * multiplier;
+            b.state = 'FLYING';
+
+            flyingBirds.push(b);
+            currentSlingshotBird = null;
+
+            setTimeout(loadSelectedBird, 400);
+        }
+
+        function triggerSpecialAbility(b) {
+            if (b.abilityUsed) return;
+            b.abilityUsed = true;
+
+            if (b.type === 'YELLOW') {
+                b.vx *= 3.0;
+                b.vy *= 3.0;
+            } else if (b.type === 'BLUE') {
+                flyingBirds.push({
+                    type: 'BLUE', color: '#29b6f6', radius: 12,
+                    x: b.x, y: b.y - 15, vx: b.vx * 1.15, vy: b.vy - 3,
+                    state: 'FLYING', abilityUsed: true
+                });
+                flyingBirds.push({
+                    type: 'BLUE', color: '#29b6f6', radius: 12,
+                    x: b.x, y: b.y + 15, vx: b.vx * 1.15, vy: b.vy + 3,
+                    state: 'FLYING', abilityUsed: true
+                });
+            } else if (b.type === 'BLACK') {
+                explodeAt(b.x, b.y, 160, 250);
+                b.state = 'DEAD';
+            } else if (b.type === 'WHITE') {
+                projectiles.push({ x: b.x, y: b.y, vx: 0, vy: 15, radius: 10 });
+                b.vy = -15;
+                b.vx *= 0.5;
+            }
+        }
+
+        function explodeAt(x, y, radius, damage) {
+            for (let i = blocks.length - 1; i >= 0; i--) {
+                let dist = Math.hypot(blocks[i].x - x, blocks[i].y - y);
+                if (dist < radius) {
+                    blocks[i].health -= damage;
+                    if (blocks[i].health <= 0) {
+                        blocks.splice(i, 1);
+                        score += 200;
+                    }
+                }
+            }
+            for (let p of pigs) {
+                if (p.alive) {
+                    let dist = Math.hypot(p.x - x, p.y - y);
+                    if (dist < radius) {
+                        p.health -= damage;
+                        if (p.health <= 0) {
+                            p.alive = false;
+                            score += 500;
+                        }
+                    }
+                }
+            }
+        }
+
+        function update() {
+            if (gameState !== 'PLAYING') return;
+
+            if (currentSlingshotBird && currentSlingshotBird.state === 'CHARGING') {
+                powerValue += 0.03 * powerDirection;
+                if (powerValue >= 1) { powerValue = 1; powerDirection = -1; }
+                else if (powerValue <= 0) { powerValue = 0; powerDirection = 1; }
+            }
+
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                let proj = projectiles[i];
+                proj.y += proj.vy;
+                let groundLevel = canvas.height - 80;
+                if (proj.y >= groundLevel) {
+                    explodeAt(proj.x, proj.y, 110, 180);
+                    projectiles.splice(i, 1);
+                }
+            }
+
+            for (let i = flyingBirds.length - 1; i >= 0; i--) {
+                let b = flyingBirds[i];
+                if (b.state === 'FLYING') {
+                    b.vy += gravity;
+                    b.x += b.vx;
+                    b.y += b.vy;
+
+                    let groundLevel = canvas.height - 80;
+                    if (b.y > groundLevel) {
+                        b.y = groundLevel;
+                        b.vx *= 0.6;
+                        if (Math.abs(b.vx) < 0.5 && Math.abs(b.vy) < 0.5) b.state = 'DEAD';
+                    }
+
+                    for (let j = blocks.length - 1; j >= 0; j--) {
+                        let blk = blocks[j];
+                        if (b.x > blk.x && b.x < blk.x + blk.w && b.y > blk.y && b.y < blk.y + blk.h) {
+                            let force = Math.hypot(b.vx, b.vy);
+                            blk.health -= force * 4.5;
+                            b.vx *= -0.4;
+                            b.vy *= -0.4;
+                            score += 40;
+
+                            if (b.type === 'BLACK' && !b.abilityUsed) explodeAt(b.x, b.y, 140, 200);
+                            if (blk.health <= 0) { blocks.splice(j, 1); score += 150; }
+                        }
+                    }
+
+                    for (let p of pigs) {
+                        if (p.alive) {
+                            let dist = Math.hypot(b.x - p.x, b.y - p.y);
+                            if (dist < b.radius + p.radius) {
+                                let force = Math.hypot(b.vx, b.vy);
+                                p.health -= force * 5.5;
+                                b.vx *= -0.5;
+                                b.vy *= -0.5;
+
+                                if (b.type === 'BLACK' && !b.abilityUsed) explodeAt(b.x, b.y, 140, 200);
+                                if (p.health <= 0) { p.alive = false; score += 400; }
+                            }
+                        }
+                    }
+
+                    if (b.x > canvas.width + 100 || b.x < -50 || b.y > canvas.height + 100) b.state = 'DEAD';
+                }
+            }
+
+            flyingBirds = flyingBirds.filter(b => b.state !== 'DEAD');
+
+            let pigsAlive = pigs.filter(p => p.alive).length;
+            if (pigsAlive === 0) setTimeout(showWinScreen, 500);
+
+            updateHUD();
+        }
+
+        function showWinScreen() {
+            gameState = 'GAMEOVER';
+            document.getElementById('power-hint').classList.add('hidden');
+            document.getElementById('msg-title').innerText = '¡VICTORIA EN NIVEL ' + currentLevel + '!';
+            document.getElementById('msg-subtitle').innerText = 'Puntuación total: ' + score;
+
+            let nextBtn = document.getElementById('next-lvl-btn');
+            if (currentLevel < maxLevels) {
+                nextBtn.innerText = 'SIGUIENTE NIVEL';
+                nextBtn.onclick = function() { startLevel(currentLevel + 1); };
+            } else {
+                nextBtn.innerText = '¡JUEGO COMPLETADO!';
+                nextBtn.onclick = function() { quitToMenu(); };
+            }
+            document.getElementById('message-screen').classList.remove('hidden');
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#87CEEB';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#4CAF50';
+            ctx.fillRect(0, canvas.height - 80, canvas.width, 80);
+            ctx.fillStyle = '#388E3C';
+            ctx.fillRect(0, canvas.height - 80, canvas.width, 15);
+
+            ctx.strokeStyle = '#5d4037';
+            ctx.lineWidth = 10;
+            ctx.beginPath();
+            ctx.moveTo(slingX, canvas.height - 80);
+            ctx.lineTo(slingX, slingY);
+            ctx.stroke();
+
+            // Trayectoria proyectada
+            if (currentSlingshotBird && (currentSlingshotBird.state === 'AIMING' || currentSlingshotBird.state === 'CHARGING')) {
+                let simX = slingX;
+                let simY = slingY;
+                let mult = 0.20 + ((currentSlingshotBird.state === 'CHARGING' ? powerValue : 0.5) * 0.42);
+                let simVx = (slingX - currentSlingshotBird.x) * mult;
+                let simVy = (slingY - currentSlingshotBird.y) * mult;
+
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([6, 6]);
+                ctx.beginPath();
+                ctx.moveTo(simX, simY);
+
+                for (let step = 0; step < 45; step++) {
+                    simVy += gravity;
+                    simX += simVx;
+                    simY += simVy;
+                    ctx.lineTo(simX, simY);
+                    if (simY >= canvas.height - 80) break;
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            for (let b of blocks) {
+                ctx.fillStyle = b.color;
+                ctx.fillRect(b.x, b.y, b.w, b.h);
+                ctx.strokeStyle = '#263238';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(b.x, b.y, b.w, b.h);
+            }
+
+            for (let p of pigs) {
+                if (p.alive) {
+                    ctx.fillStyle = '#81c784';
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#388e3c';
+                    ctx.stroke();
+
+                    ctx.fillStyle = 'white';
+                    ctx.beginPath();
+                    ctx.arc(p.x - 5, p.y - 3, 3.5, 0, Math.PI * 2);
+                    ctx.arc(p.x + 5, p.y - 3, 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = 'black';
+                    ctx.beginPath();
+                    ctx.arc(p.x - 5, p.y - 3, 1.2, 0, Math.PI * 2);
+                    ctx.arc(p.x + 5, p.y - 3, 1.2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            for (let proj of projectiles) {
+                ctx.fillStyle = '#fffde7';
+                ctx.beginPath();
+                ctx.arc(proj.x, proj.y, proj.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#fbc02d';
+                ctx.stroke();
+            }
+
+            for (let b of flyingBirds) {
+                ctx.fillStyle = b.color;
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#000000';
+                ctx.stroke();
+
+                ctx.fillStyle = '#ffa000';
+                ctx.beginPath();
+                ctx.moveTo(b.x + b.radius - 4, b.y);
+                ctx.lineTo(b.x + b.radius + 8, b.y + 3);
+                ctx.lineTo(b.x + b.radius - 2, b.y + 7);
+                ctx.fill();
+            }
+
+            if (currentSlingshotBird) {
+                let b = currentSlingshotBird;
+                ctx.fillStyle = b.color;
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#000000';
+                ctx.stroke();
+
+                ctx.fillStyle = '#ffa000';
+                ctx.beginPath();
+                ctx.moveTo(b.x + b.radius - 4, b.y);
+                ctx.lineTo(b.x + b.radius + 8, b.y + 3);
+                ctx.lineTo(b.x + b.radius - 2, b.y + 7);
+                ctx.fill();
+            }
+
+            if (currentSlingshotBird && currentSlingshotBird.state === 'CHARGING') {
+                let barWidth = 180;
+                let barHeight = 20;
+                let barX = canvas.width / 2 - barWidth / 2;
+                let barY = 25;
+
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+                ctx.fillRect(barX - 4, barY - 4, barWidth + 8, barHeight + 8);
+                ctx.fillStyle = '#424242';
+                ctx.fillRect(barX, barY, barWidth, barHeight);
+
+                let fillWidth = barWidth * powerValue;
+                let fillColor = powerValue < 0.4 ? '#4caf50' : (powerValue < 0.75 ? '#ffeb3b' : '#f44336');
+                ctx.fillStyle = fillColor;
+                ctx.fillRect(barX, barY, fillWidth, barHeight);
+
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(barX, barY, barWidth, barHeight);
+            }
+        }
+
+        function loop() {
+            if (gameState === 'PLAYING') {
+                update();
+                draw();
+                requestAnimationFrame(loop);
+            }
+        }
+
+        resize();
+    </script>
 </body>
 </html>
